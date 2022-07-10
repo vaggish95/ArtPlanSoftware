@@ -1,27 +1,29 @@
 package com.artplansoftware.secondtask.entity;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Table (name = "users")
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 public class User {
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column(name="id")
-    long id;
+    private long id;
 
     @Column (name = "name")
-    String name;
+    private String name;
 
     @Column (name = "password")
-    String password;
+    private String password;
 
     @ManyToMany
     @JoinTable(
@@ -36,8 +38,10 @@ public class User {
             orphanRemoval = true)
     private List <Animal> animalsList;
 
-    public User(String name, String password) {
+    public User (String name, String password, List <Role> rolesList) {
         this.name = name;
         this.password = password;
+        this.roles= rolesList;
     }
+
 }

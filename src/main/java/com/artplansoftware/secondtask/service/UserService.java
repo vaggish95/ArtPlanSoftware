@@ -1,5 +1,6 @@
 package com.artplansoftware.secondtask.service;
 
+import com.artplansoftware.secondtask.entity.Role;
 import com.artplansoftware.secondtask.entity.User;
 import com.artplansoftware.secondtask.exceptions.CreationOfExistingUserException;
 import com.artplansoftware.secondtask.repository.RolesRepository;
@@ -9,14 +10,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
 
-
-    UserRepository repository;
-    PasswordEncoder passwordEncoder;
-    RolesRepository rolesRepository;
+    private UserRepository repository;
+    private PasswordEncoder passwordEncoder;
+    private RolesRepository rolesRepository;
 
     @Autowired
     public UserService(UserRepository repository, PasswordEncoder passwordEncoder, RolesRepository rolesRepository) {
@@ -26,13 +28,19 @@ public class UserService {
     }
 
     public void addNewUser (User user,  HttpServletRequest request) {
-        if (!repository.existsByName(user.getName())) {
+        List <Role> roles = new ArrayList<>();
+        Role role = rolesRepository.findByName("user");
+        roles.add(role);
+
+        if (!repository.existsByName(user.getName().toLowerCase())) {
             User newUser = new User(
                     user.getName().toLowerCase(),
-                    passwordEncoder.encode(user.getPassword()));
-            repository.save(newUser);
+                    passwordEncoder.encode(user.getPassword()),
+                    roles);
 
+            repository.save(newUser);
             authWithHttpServletRequest(request, user.getName().toLowerCase(), user.getPassword());
+
         } else throw new CreationOfExistingUserException();
     }
 

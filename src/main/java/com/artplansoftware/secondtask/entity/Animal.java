@@ -1,33 +1,35 @@
 package com.artplansoftware.secondtask.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table (name = "Animals")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Animal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
-    long id;
+    private long id;
 
     @Column(name = "name")
-    String name;
+    private String name;
 
-    @Column(name = "sex")
-    char sex;
+    @Column(name = "gender")
+    private char gender;
 
     @Column(name = "birthday")
-    LocalDate birthday;
+    private Date birthday;
 
     @JsonIgnore
     @ManyToOne
-    User user;
+    private User user;
 
 }

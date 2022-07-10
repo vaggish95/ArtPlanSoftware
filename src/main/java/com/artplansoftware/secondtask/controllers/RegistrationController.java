@@ -20,7 +20,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public void addUser (@RequestBody User user,  HttpServletRequest request) {
+    public void registerNewUser (@RequestBody User user, HttpServletRequest request) {
         userService.addNewUser(user, request);
     }
 

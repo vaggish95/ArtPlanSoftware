@@ -15,14 +15,16 @@ import java.util.List;
 
 @Service
 public class AnimalService {
-    AnimalRepository animalRepository;
-    UserRepository userRepository;
+
+    private AnimalRepository animalRepository;
+    private  UserRepository userRepository;
 
     @Autowired
     public AnimalService(AnimalRepository animalRepository, UserRepository userRepository) {
         this.animalRepository = animalRepository;
         this.userRepository = userRepository;
     }
+
     public void addAnimal (Principal principal, Animal animal) {
         if ( !animalRepository.existsByUserNameAndName(principal.getName(), animal.getName())) {
             User user = userRepository.findByName(principal.getName());
@@ -31,6 +33,11 @@ public class AnimalService {
         } else throw new CreationOfExistingAnimalException();
     }
 
+    public Animal getOneAnimal (Principal principal, String name) {
+        if (animalRepository.findByUserNameAndName (principal.getName(), name) == null)  {
+            throw new AnimalNotFoundException();
+        } else return animalRepository.findByUserNameAndName(principal.getName(), name);
+    }
 
     public List<Animal> getAnimalsList (Principal principal) {
         if (animalRepository.findByUserName(principal.getName()).isEmpty()) {
@@ -38,19 +45,14 @@ public class AnimalService {
         } return animalRepository.findByUserName(principal.getName());
     }
 
-    public Animal getOneAnimal (Principal principal, String name) {
-        if (animalRepository.findByUserNameAndName (principal.getName(), name) == null)  {
-            throw new AnimalNotFoundException();
-        } else return animalRepository.findByUserNameAndName(principal.getName(), name);
-    }
-
-    public void editAnimal (Principal principal, String oldName, String newName) {
+    public void editAnimalName(Principal principal, String oldName, String newName) {
         Animal animal = animalRepository.findByUserNameAndName(principal.getName(), oldName);
         if (animal == null) {
                 throw new AnimalNotFoundException();
-            }
-        animal.setName(newName);
-        animalRepository.save(animal);
+            } else {
+            animal.setName(newName);
+            animalRepository.save(animal);
+        }
     }
 
     @Transactional

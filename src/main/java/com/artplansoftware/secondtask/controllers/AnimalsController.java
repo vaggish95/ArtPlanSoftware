@@ -34,7 +34,7 @@ public class AnimalsController {
 
     @PatchMapping ("/edit")
     public void editAnimal (String name, String new_name, Principal user) {
-        animalService.editAnimal(user, name, new_name);
+        animalService.editAnimalName(user, name, new_name);
     }
 
     @DeleteMapping ("/delete/{name}")
